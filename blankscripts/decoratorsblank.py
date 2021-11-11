@@ -27,11 +27,11 @@ def pass_simple_function_as_parameter():
 
     # Try also this in Python Console:
     #     def f(*args):
-    #         return sum(*args)     # it must be sum(*args), not sum(args), although in Python Console sum((1, 2)) is OK
+    #         return sum(args)      # it must be sum(args), not sum(*args); e.g. in Python Console sum((1, 2)) is OK
     #     def g(f, *args):
     #         return f(*args)       # heuristics: if *args is in a f. signature, use *args in the f. body as well
-    #     g(f, (1, 2, 3))           # result: 6
-    #     g(f, [1, 2, 3])           # result: 6
+    #     g(f, *(1, 2, 3))          # result: 6
+    #     g(f, *[1, 2, 3])          # result: 6
 
     # Case 2: 1 or more arguments (the first one is positional)
 
