@@ -32,16 +32,22 @@ def get_project_dir():
     """Returns the Path object corresponding to the project root directory.
     """
 
+    return PROJECT_DIR
+
 
 def get_data_dir():
     """Returns the Path object corresponding to the data directory
     (by convention located right under the project root directory).
     """
 
+    data_dir = get_project_dir() / 'data'
+    data_dir.mkdir(parents=True, exist_ok=True)
+    return data_dir
+
 
 if __name__ == '__main__':
 
-    pass
+    # pass
 
     # Demonstrate pathlib.Path
     # - user's home dir: Path.home()
@@ -54,3 +60,5 @@ if __name__ == '__main__':
     # - project dir: settings.PROJECT_DIR
 
     # Demonstrate get_project_dir(), get_data_dir()
+    print(get_project_dir())
+    print(get_data_dir())

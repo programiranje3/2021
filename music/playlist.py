@@ -5,9 +5,11 @@ It includes a list of Song objects and the dates when the playlist was created a
 from datetime import date, datetime, time
 from util.utility import *
 import json
+import sys
+import pickle
 
-# from music.song import Song
-# from util.utility import format_date
+from music.song import *
+from util.utility import *
 
 
 class Playlist:
@@ -21,6 +23,8 @@ class Playlist:
     play_me = 'Play me :)'
 
     def __init__(self, name, *songs, created=date.today(), completed=date.today()):
+        if created > completed:
+            raise PlaylistDateError(created, completed)
         self.name = name
         self.songs = songs
         self.created = created
@@ -107,7 +111,8 @@ class PlaylistDateError(PlaylistError):
 
     # define __init__() to include an appropriate message if the input args (created, completed) dates are not OK
 
-    pass
+    def __init__(self, created, completed):
+        self.message = f'date created ({created}) after date completed ({completed})'
 
 
 class PlaylistEncoder(json.JSONEncoder):
@@ -199,25 +204,87 @@ if __name__ == "__main__":
     # Here's the hierarchy of built-in exceptions: https://docs.python.org/3/library/exceptions.html#exception-hierarchy
 
     # Demonstrate exceptions - the general structure of try-except statements, possibly including else and finally
+    # songs = [imagine, across_the_universe, happiness_is_a_warm_gun, love]
+    # try:
+    #     # print(4/0)
+    #     print(songs[6])
+    #     # pass
+    # except ZeroDivisionError:
+    #     print('ZeroDivisionError')
+    # except IndexError:
+    #     print('IndexError')
+    # else:
+    #     print('OK')
+    # finally:
+    #     print('Finally')
     print()
 
-    # Demonstrate exceptions - except: Exception as <e> (and then type(<e>), <e>.__class__.__name__, <e>.args,...)
+    # # Demonstrate exceptions - except: Exception as <e> (and then type(<e>), <e>.__class__.__name__, <e>.args,...)
+    # songs = [imagine, across_the_universe, happiness_is_a_warm_gun, love]
+    # try:
+    #     # print(4/0)
+    #     print(songs[6])
+    #     # pass
+    # except IndexError as e:
+    #     # print(e.__class__.__name__, ': ' + e.args[0])
+    #     sys.stderr.write(e.__class__.__name__ + ': ' + e.args[0] + '\n\n')
+    #     raise
+    # print()
+
+    # # Demonstrate exceptions - user-defined exceptions (wrong playlist date(s))
+    # songs = [imagine, across_the_universe, happiness_is_a_warm_gun, love]
+    # try:
+    #     p = Playlist('My song', *songs, created=date(2029, 5, 7), completed=date.today())
+    #     print(p)
+    # except PlaylistDateError as e:
+    #     sys.stderr.write(e.__class__.__name__ + ': ' + e.message + '\n\n')
+    #     raise
+    # print()
+
+    # # Demonstrate writing to a text file - <outfile>.write(), <outfile>.writelines()
+    # songs = [imagine, across_the_universe, happiness_is_a_warm_gun, love]
+    # file = get_data_dir() / 'songs.txt'
+    # with open(file, 'w') as f:
+    #     # for s in songs:
+    #     #     f.write(str(s) + '\n')
+    #     f.writelines([str(s) + '\n' for s in songs])
+    # print('Done')
+    # print()
+
+    # # Demonstrate reading from a text file - <infile>.read(), <infile>.readline()
+    # file = get_data_dir() / 'songs.txt'
+    # with open(file, 'r') as f:
+    #     # songs = []
+    #     # while True:
+    #     #     line = f.readline().rstrip()
+    #     #     if line:
+    #     #         songs.append(Song.from_str(line))
+    #     #     else:
+    #     #         break
+    #     # # f.writelines([str(s) + '\n' for s in songs])
+    #     lines = f.read().rstrip()
+    #     songs = [Song.from_str(s.rstrip()) for s in lines.split('\n')]
+    # # print('Done')
+    # print('; '.join([str(s) for s in songs]))
+    # print()
+
+    # # Demonstrate writing to a binary file - pickle.dump()
+    # songs = [imagine, across_the_universe, happiness_is_a_warm_gun, love]
+    # file = get_data_dir() / 'songs.binary'
+    # with open(file, 'wb') as f:
+    #     # for s in songs:
+    #     #     f.write(str(s) + '\n')
+    #     pickle.dump(songs, f)
+    # print('Done')
     print()
 
-    # Demonstrate exceptions - user-defined exceptions (wrong playlist date(s))
-    print()
-
-    # Demonstrate writing to a text file - <outfile>.write(), <outfile>.writelines()
-    print()
-
-    # Demonstrate reading from a text file - <infile>.read(), <infile>.readline()
-    print()
-
-    # Demonstrate writing to a binary file - pickle.dump()
-    print()
-
-    # Demonstrate reading from a binary file - pickle.load()
-    print()
+    # # Demonstrate reading from a binary file - pickle.load()
+    # file = get_data_dir() / 'songs.binary'
+    # with open(file, 'rb') as f:
+    #     songs = pickle.load(f)
+    # # print('Done')
+    # print('; '.join([str(s) for s in songs]))
+    # print()
 
     # Demonstrate JSON encoding/decoding of Playlist objects
     # Single object

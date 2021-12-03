@@ -1,8 +1,15 @@
 """Project configuration settings (PROJECT_DIR, format strings, etc.).
 """
 
-PREFERRED_DATE_FORMAT = '%b %d, %Y'
+from pathlib import Path
 
+PREFERRED_DATE_FORMAT = '%b %d, %Y'
+PROJECT_DIR = Path(__file__).parent
+
+
+# print(__file__)
+# print(Path(__file__))
+# print(Path(__file__).parent)
 
 # import os
 

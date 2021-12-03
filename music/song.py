@@ -99,6 +99,7 @@ class SongEncoder(json.JSONEncoder):
 
         pass
         # can simply return song_py_to_json(song), to avoid code duplication
+        return song_py_to_json(song)
 
 
 def song_py_to_json(song):
@@ -106,7 +107,9 @@ def song_py_to_json(song):
     """
 
     # recommendation: always use double quotes with JSON
-    pass
+    if isinstance(song, Song):
+        return {"__Song__": song.__dict__}
+    raise TypeError('expected Song object')
 
 
 def song_json_to_py(song_json):
@@ -120,7 +123,11 @@ def song_json_to_py(song_json):
     suddenly song_json DOES include "__Song__" and everything works fine (!?!?!).
     """
 
-    pass
+    if "__Song__" in song_json:
+        s = Song('')
+        s.__dict__.update(song_json["__Song__"])
+        return s
+    return song_json
 
 
 class Ballad(Song):
@@ -317,8 +324,18 @@ if __name__ == "__main__":
 
     # Demonstrate JSON encoding/decoding of Musician objects
     # Single object
+    imagine_json = json.dumps(imagine, default=song_py_to_json, indent=4)
+    # imagine_json = json.dumps(imagine, cls=SongEncoder, indent=4)
+    print(imagine_json)
+    imagine_py = json.loads(imagine_json, object_hook=song_json_to_py)
     print()
 
     # List of objects
+    from testdata.songs import *
+    songs = [imagine, across_the_universe, happiness_is_a_warm_gun, love]
+    songs_json = json.dumps(songs, default=song_py_to_json, indent=4)
+    print(songs_json)
+    songs_py = json.loads(songs_json, object_hook=song_json_to_py)
+    print('; '.join([str(s) for s in songs_py]))
     print()
 
