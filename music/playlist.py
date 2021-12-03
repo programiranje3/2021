@@ -94,6 +94,22 @@ def next_song(playlist):
         print('Yeah!')
 
 
+class PlaylistError(Exception):
+    """Base class for exceptions in this module.
+    """
+
+    pass
+
+
+class PlaylistDateError(PlaylistError):
+    """Exception raised when the date when a playlist was created is after the date when the playlist was completed.
+    """
+
+    # define __init__() to include an appropriate message if the input args (created, completed) dates are not OK
+
+    pass
+
+
 class PlaylistEncoder(json.JSONEncoder):
     """JSON encoder for Playlist objects (cls= parameter in json.dumps()).
     """
@@ -112,6 +128,9 @@ def playlist_py_to_json(playlist):
 def playlist_json_to_py(playlist_json):
     """JSON decoder for Playlist objects (object_hook= parameter in json.loads()).
     """
+
+    # The songs field is specified as *songs in Playlist.__init__(),
+    # make sure to use tuple(json.loads(<songs in playlist_json>))
 
 
 if __name__ == "__main__":
@@ -174,6 +193,30 @@ if __name__ == "__main__":
     print(next(e))
     print(next(e))
     # print(next(e))
+    print()
+
+    # Demonstrate exceptions
+    # Here's the hierarchy of built-in exceptions: https://docs.python.org/3/library/exceptions.html#exception-hierarchy
+
+    # Demonstrate exceptions - the general structure of try-except statements, possibly including else and finally
+    print()
+
+    # Demonstrate exceptions - except: Exception as <e> (and then type(<e>), <e>.__class__.__name__, <e>.args,...)
+    print()
+
+    # Demonstrate exceptions - user-defined exceptions (wrong playlist date(s))
+    print()
+
+    # Demonstrate writing to a text file - <outfile>.write(), <outfile>.writelines()
+    print()
+
+    # Demonstrate reading from a text file - <infile>.read(), <infile>.readline()
+    print()
+
+    # Demonstrate writing to a binary file - pickle.dump()
+    print()
+
+    # Demonstrate reading from a binary file - pickle.load()
     print()
 
     # Demonstrate JSON encoding/decoding of Playlist objects

@@ -106,11 +106,21 @@ def song_py_to_json(song):
     """
 
     # recommendation: always use double quotes with JSON
+    pass
 
 
 def song_json_to_py(song_json):
     """JSON decoder for Song objects (object_hook= parameter in json.loads()).
+
+    It is essential to run this code in the debugger. If the breakpoint is set at the very first line (the if statement)
+    it is possible to see that, internally, this function runs TWICE per call (!!!) -
+    the first time the if statement evaluates to False because the first time song_json does not include "__Song__" (!),
+    and the return song_json actually does not return to the calling point but to some idiosyncratic Python functions
+    that do some internal witchcraft; when they are done, this function resurrects at the if statement again and
+    suddenly song_json DOES include "__Song__" and everything works fine (!?!?!).
     """
+
+    pass
 
 
 class Ballad(Song):
