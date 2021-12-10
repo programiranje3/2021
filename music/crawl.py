@@ -17,15 +17,24 @@ def get_soup(url: str) -> BeautifulSoup:
     """
 
     # Create Response object from HTTP GET request; assume that no redirection is allowed (allow_redirects=False)
+    response = requests.get(url, allow_redirects=False)
 
     # Get text from the Response object, using <response>.text
+    response_text = response.text
 
     # Create and return the corresponding BeautifulSoup object from the response text; use features='html.parser'
+    return BeautifulSoup(response_text, features='html.parser')
 
 
 def get_specific_page(start_url: str, page=1):
     """Returns a specific page from a Website where long lists of items are split in multiple pages.
     """
+
+    # start_url = 'https://www.imdb.com/search/keyword/?keywords=rock-%27n%27-roll%2Crock-music&ref_=kw_ref_key&' \
+    #             'mode=detail&page=1&sort=moviemeter,asc'
+
+    url_chunks = start_url.split('&page=')
+    return url_chunks[0] + '&page=' + str(page) + '&' + url_chunks[1].split('&', maxsplit=1)[1]
 
 
 def get_next_soup(start_url: str, page=1):
@@ -96,60 +105,91 @@ def get_m_info(start_url: str, max_pages=1):
 
 if __name__ == "__main__":
 
-    # Getting started
-    start_url = 'https://www.imdb.com/search/keyword/?keywords=rock-%27n%27-roll%2Crock-music&ref_=kw_ref_key' \
-                '&sort=moviemeter,asc&mode=detail&page=1'
-
-    # Create Response object from GET request, using requests.get(<url>, allow_redirects=False)
-    print()
-
-    # Get response text from Response object, using <response>.text
-    print()
-
-    # Get BeautifulSoup object from response text, using BeautifulSoup(<response text>, features='html.parser')
-    print()
-
-    # Save BeautifulSoup object to an HTML file,
-    # using <Path-file-object>.write_text(str(<BeautifulSoup object>), encoding='utf-8', errors='replace')
-    print()
-
-    # Demonstrate <BeautifulSoup object>.find('<tag>'), <BeautifulSoup object>.find_all(<tag>),
-    # <BeautifulSoup object>.find_all(<tag>, {'<tag_attr_name>': "<tag_attr_value>"});
-    # use, e.g., 'h3' or 'div' as the tags in the examples (e.g., <div class="lister-item-image ribbonize">)
-    print()
-
-    # Demonstrate getting a 'subtag' for a tag (a bs4.element.Tag object), e.g. h3.find('<subtag>')
-    print()
-
-    # Demonstrate getting an attribute value for a tag (a bs4.element.Tag object),
-    # e.g. h3.find('<subtag>'), filtered with <{'class': "<class name>"}>;
-    # alternatively: h3.find('<tag>')['<attr>'], h3.find('<subtag>').get('<attribute>'),
-    # h3.find('<subtag>').<attribute>,... (<attribute>: e.g. text)
-    print()
-
-    # Demonstrate <tag>.find_next_siblings() (returns all <tag>'s siblings) and
-    # <tag>.find_next_sibling() (returns just the first one)
-    print()
-
-    # Each bs4.element.ResultSet, bs4.element.Tag,... can be used to create another BeautifulSoup object,
-    # using BeautifulSoup(str(<bs4.element object>), features='html.parser')
-    print()
-
-    # Get/Return all text from a bs4.element.Tag object, using <bs4.element.Tag object>.text (e.g., a h3 tag)
-    print()
-
-    # Get/Return and remove a specific item from a bs4.element.ResultSet using <result set>.pop(<index>) (default: last)
-    print()
-
-    # Example: get all movie titles from an IMDb page
-    print()
+    # # Getting started
+    # start_url = 'https://www.imdb.com/search/keyword/?keywords=rock-%27n%27-roll%2Crock-music&ref_=kw_ref_key' \
+    #             '&sort=moviemeter,asc&mode=detail&page=1'
+    #
+    # # Create Response object from GET request, using requests.get(<url>, allow_redirects=False)
+    # response = requests.get(start_url, allow_redirects=False)
+    # print()
+    #
+    # # Get response text from Response object, using <response>.text
+    # response_text = response.text
+    # print()
+    #
+    # # Get BeautifulSoup object from response text, using BeautifulSoup(<response text>, features='html.parser')
+    # soup = BeautifulSoup(response_text, features='html.parser')
+    # print(soup)
+    # print()
+    #
+    # # Save BeautifulSoup object to an HTML file,
+    # # using <Path-file-object>.write_text(str(<BeautifulSoup object>), encoding='utf-8', errors='replace')
+    # soup_file = utility.get_data_dir() / 'soup.html'
+    # soup_file.write_text(str(soup), encoding='utf-8', errors='replace')
+    # print()
+    #
+    # # Demonstrate <BeautifulSoup object>.find('<tag>'), <BeautifulSoup object>.find_all(<tag>),
+    # # <BeautifulSoup object>.find_all(<tag>, {'<tag_attr_name>': "<tag_attr_value>"});
+    # # use, e.g., 'h3' or 'div' as the tags in the examples (e.g., <div class="lister-item-image ribbonize">)
+    # h3 = soup.find('h3')
+    # print(h3)
+    # div1 = soup.find('div', {'class': "lister-item-image ribbonize"})
+    # print(div1)
+    # print()
+    # h3_all = soup.find_all('h3')
+    # print(len(h3_all))
+    # print()
+    # print(h3_all[50])
+    # print()
+    #
+    # # Demonstrate getting a 'subtag' for a tag (a bs4.element.Tag object), e.g. h3.find('<subtag>')
+    # print(h3.find('a'))
+    # print()
+    #
+    # # Demonstrate getting an attribute value for a tag (a bs4.element.Tag object),
+    # # e.g. h3.find('<subtag>'), filtered with <{'class': "<class name>"}>;
+    # # alternatively: h3.find('<tag>')['<attr>'], h3.find('<subtag>').get('<attribute>'),
+    # # h3.find('<subtag>').<attribute>,... (<attribute>: e.g. text)
+    # print(h3.text)
+    # print(h3.a.text)
+    # print()
+    #
+    # # Demonstrate <tag>.find_next_siblings() (returns all <tag>'s siblings) and
+    # # <tag>.find_next_sibling() (returns just the first one)
+    # span1 = h3.find('span')
+    # print(span1)
+    # # print(span1.find_next_sibling())
+    # print(span1.find_next_siblings())
+    # print()
+    #
+    # # Each bs4.element.ResultSet, bs4.element.Tag,... can be used to create another BeautifulSoup object,
+    # # using BeautifulSoup(str(<bs4.element object>), features='html.parser')
+    # h3_soup = BeautifulSoup(str(h3), features='html.parser')
+    # print(h3.find('span'))
+    # print()
+    #
+    # # Get/Return all text from a bs4.element.Tag object, using <bs4.element.Tag object>.text (e.g., a h3 tag)
+    # print()
+    #
+    # # Get/Return and remove a specific item from a bs4.element.ResultSet using <result set>.pop(<index>) (default: last)
+    # last = h3_all.pop()
+    # print(last)
+    # print(len(h3_all))
+    # print()
+    #
+    # # Example: get all movie titles from an IMDb page
+    # for h3 in h3_all:
+    #     print(h3.a.text)
+    # print()
 
     # # Test get_soup()
-    # start_url = 'https://www.imdb.com/search/keyword/?keywords=rock-%27n%27-roll%2Crock-music&ref_=kw_ref_key&' \
-    #             'mode=detail&page=1&sort=moviemeter,asc'
+    start_url = 'https://www.imdb.com/search/keyword/?keywords=rock-%27n%27-roll%2Crock-music&ref_=kw_ref_key&' \
+                'mode=detail&page=1&sort=moviemeter,asc'
+    print(get_soup(start_url))
     print()
 
     # Test get_specific_page()
+    print(get_specific_page(start_url, 3))
     print()
 
     # Test get_next_soup()

@@ -129,6 +129,14 @@ def playlist_py_to_json(playlist):
     """JSON encoder for Playlist objects (default= parameter in json.dumps()).
     """
 
+    if isinstance(playlist, Playlist):
+        d = playlist.__dict__.copy()
+        d["songs"] = json.dumps(playlist.songs, default=song_py_to_json, indent=4)
+        d["created"] = date_py_to_json(playlist.created)
+        d["completed"] = date_py_to_json(playlist.completed)
+        return {"__Playlist__": d}
+    raise TypeError('not a Playlist object')
+
 
 def playlist_json_to_py(playlist_json):
     """JSON decoder for Playlist objects (object_hook= parameter in json.loads()).
@@ -136,6 +144,17 @@ def playlist_json_to_py(playlist_json):
 
     # The songs field is specified as *songs in Playlist.__init__(),
     # make sure to use tuple(json.loads(<songs in playlist_json>))
+
+    if "__Playlist__" in playlist_json:
+        p = Playlist('')
+        d = playlist_json["__Playlist__"]
+        p.name = d["name"]
+        p.songs = tuple(json.loads(d["songs"], object_hook=song_json_to_py))
+        p.created = date_json_to_py(d["created"])
+        p.completed = date_json_to_py(d["completed"])
+        return p
+
+    return playlist_json
 
 
 if __name__ == "__main__":
@@ -288,9 +307,18 @@ if __name__ == "__main__":
 
     # Demonstrate JSON encoding/decoding of Playlist objects
     # Single object
+    pl_json = json.dumps(pl, default=playlist_py_to_json, indent=4)
+    print(pl_json)
+    pl_py = json.loads(pl_json, object_hook=playlist_json_to_py)
+    print(pl_py)
     print()
 
     # List of objects
+    pls_json = json.dumps([pl, pl], default=playlist_py_to_json, indent=4)
+    print(pls_json)
+    pls_py = json.loads(pls_json, object_hook=playlist_json_to_py)
+    for p in pls_py:
+        print(p)
     print()
 
 
